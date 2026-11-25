@@ -1,0 +1,39 @@
+* Dual-Band Frequency-Selective Circuit Netlist
+* Input: Vin AC 2.0V (Sweep 100Hz to 20kHz)
+Vin in 0 AC 2.0 SIN(0 2.0 5k)
+
+* Stage 1: Low-Pass Filter (Cutoff ~ 5kHz)
+R1 in n_lpf 3.3k
+C1 n_lpf 0 10n
+
+* Stage 2: Band-Pass Filter (High-pass 6kHz + Low-pass 12kHz)
+C2 in n_hp 10n
+R2 n_hp 0 2.7k
+R3 n_hp n_bpf 1.3k
+C3 n_bpf 0 10n
+
+* Peak Detectors
+D1 n_lpf env_lpf 1N5819
+C_env1 env_lpf 0 100n
+R_bleed1 env_lpf 0 100k
+
+D2 n_bpf env_bpf 1N5819
+C_env2 env_bpf 0 100n
+R_bleed2 env_bpf 0 100k
+
+* Comparator References (Vcc = 5V)
+Vcc vcc 0 DC 5.0
+R_ref1 vcc vref 10k
+R_ref2 vref 0 2.2k
+
+* LED Indicators
+R_led1 out_lpf led1 330
+D_led1 led1 0 LED_GREEN
+R_led2 out_bpf led2 330
+D_led2 led2 0 LED_RED
+
+.model 1N5819 D(Is=31.7u Rs=0.051 N=1.05 Cjo=110p M=0.38 Vj=0.45)
+.model LED_GREEN D(Is=1e-18 N=1.8 Rs=2.5 Eg=2.2)
+.model LED_RED D(Is=1e-19 N=1.6 Rs=2.0 Eg=1.9)
+.ac dec 100 100 20k
+.end
